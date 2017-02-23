@@ -1,0 +1,160 @@
+{% extends "webacula/base.html" %}
+{% block EXTRA_JS %}
+	<script type="text/javascript">
+		var toolbar = [{
+			text:'Add',
+			iconCls:'icon-add',
+			handler:function(){alert('add')}
+		},'-',{
+			text:'Del',
+			iconCls:'icon-remove',
+			handler:function(){alert('Del')}
+		},'-',{
+			text:'Edit',
+			iconCls:'icon-edit',
+			handler:function(){alert('Edit')}
+		}];
+		
+		function test()
+		{
+			alert("test");
+		}
+		
+		var url;  
+        function newUser(){  
+            $('#dlg').dialog('open').dialog('setTitle','New User');  
+            $('#fm').form('clear');  
+            url = 'save_user.php';  
+        }  
+		
+        function editUser(){  
+			
+            var row = $('#tab').datagrid('getSelected'); 
+					
+            if (row)
+			{  
+				alert(row.itemid);
+                $('#dlg').dialog('open').dialog('setTitle','Edit User');  
+                $('#fm').form('load',row);  
+                url = 'update_user.php?id='+row.id;  
+            }
+			else
+			{
+				alert("Not select");
+			}
+        }  
+        function saveUser(){  
+            $('#fm').form('submit',{  
+                url: url,  
+                onSubmit: function(){  
+                    return $(this).form('validate');  
+                },  
+                success: function(result){  
+                    var result = eval('('+result+')');  
+                    if (result.success){  
+                        $('#dlg').dialog('close');      // close the dialog  
+                        $('#tab').datagrid('reload');    // reload the user data  
+                    } else {  
+                        $.messager.show({  
+                            title: 'Error',  
+                            msg: result.msg  
+                        });  
+                    }  
+                }  
+            });  
+        }  
+        function removeUser(){  
+            var row = $('#tab').datagrid('getSelected');  
+            if (row){  
+                $.messager.confirm('Confirm','Are you sure you want to remove this user?',function(r){  
+                    if (r){  
+                        $.post('remove_user.php',{id:row.id},function(result){  
+                            if (result.success){  
+                                $('#tab').datagrid('reload');    // reload the user data  
+                            } else {  
+                                $.messager.show({   // show error message  
+                                    title: 'Error',  
+                                    msg: result.msg  
+                                });  
+                            }  
+                        },'json');  
+                    }  
+                });  
+            }  
+        } 
+	</script>
+{% endblock %}
+
+{% block Body %} 
+<body style="margin:0; padding: 0;height:500px">
+	<div style="margin:0px 0;"></div>
+	<table id="tab" class="easyui-datagrid"  title="一览" style="width:100%;height:100%"
+			data-options="rownumbers:true,singleSelect:true,pagination:true,fit:true,fitColumns:false,url:'dummpjson',method:'get',toolbar:tb,">
+		<thead>
+			<tr>
+				<th data-options="field:'itemid',width:'10%'">Item ID</th>
+				<th data-options="field:'productid',width:'10%'">Product</th>
+				<th data-options="field:'listprice',width:'10%',align:'right'">List Price</th>
+				<th data-options="field:'unitcost',width:'10%',align:'right'">Unit Cost</th>
+				<th data-options="field:'attr1',width:'10%'">Attribute</th>
+				<th data-options="field:'status',width:'10%',align:'center'">Status</th>
+			</tr>
+		</thead>
+	</table>
+	
+	
+	<div id="tb" style="padding:2px 5px;">
+		<a href="javascript:void(0)" onclick="newUser()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="accept()">新建</a>
+		<a href="javascript:void(0)" onclick="editUser()" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="reject()">修改</a>
+		<a href="javascript:void(0)" onclick="removeUser()" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="getChanges()">删除</a>
+		&nbsp;&nbsp;&nbsp;Date From: <input class="easyui-datebox" style="width:110px">
+		To: <input class="easyui-datebox" style="width:110px">
+		By: 
+		<select class="easyui-combobox" panelHeight="auto" style="width:100px">
+			<option value="java">Java</option>
+			<option value="c">C</option>
+			<option value="basic">Basic</option>
+			<option value="perl">Perl</option>
+			<option value="python">Python</option>
+		</select>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search">Search</a>
+	</div>
+	
+	<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"  
+            closed="true" buttons="#dlg-buttons" modal="true">  
+        <div class="ftitle"></div>  
+        <form id="fm" method="post">  
+            <table class="dv-table"> 
+			<tr>
+                <td><label>Item ID:&nbsp</label> </td> 
+                <td><input name="itemid" class="easyui-validatebox" required="true"></td> 
+            </tr>				
+            <tr>  
+                <td><label>Product:&nbsp</label> </td>  
+                <td><input name="productid" class="easyui-validatebox" required="true"></td> 
+            </tr>				
+            <tr> 
+                <td><label>List Price:</label>  </td> 
+                <td><input name="listprice"> </td> 
+            </tr>				
+            <tr> 
+                <td><label>Unit Cost:</label>  </td> 
+                <td><input name="unitcost" class="easyui-validatebox"> </td> 
+		    </tr>
+           <tr> 
+                <td><label>Attribute:</label>  </td> 
+                <td><input name="attr1" class="easyui-validatebox"> </td>  
+		   </tr>
+           <tr> 
+                <td><label>Status:&nbsp</label>  </td> 
+                <td><input name="status" class="easyui-validatebox"> </td>  
+		   </tr>
+		   </table>  
+        </form>  
+    </div>  
+    <div id="dlg-buttons">  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()">Save</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">Cancel</a>  
+    </div>  
+</body>
+{% endblock %}
