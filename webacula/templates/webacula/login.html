@@ -4,27 +4,121 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>vBacula Login</title>
+    <title>用户登录</title>
+    
     <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-easyui-1.5/themes/default/easyui.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-easyui-1.5/themes/icon.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-easyui-1.5/demo.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static  'css/jquery-ui-1.8.6.custom.css' %}">
     <script type="text/javascript" src="{% static 'js/jquery-easyui-1.5/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-easyui-1.5/jquery.easyui.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/checkInputText.js' %}"></script> -->
+    
     <style type="text/css">
-    body {
-    text-align:center;
-    }
+		body {background-color: #fff; margin:0 auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; overflow:hidden;}
+		
+		.login-content {
+			width: 90%;
+		    margin-top:    3em;
+		    margin-bottom: 2.5em;
+		    margin-left:   auto;
+		    margin-right:  auto;
+		    font-family: Microsoft YaHei,arial, verdana, sans-serif;
+		}
+		
+		#login input
+		{
+		    margin-left:    0em;
+		    padding-top:    0.3em;
+		    padding-right:  0em;
+		    padding-bottom: 0.3em;
+		    padding-left:   0em;
+		}
+		
+		.login-btn {
+		    background-color:#FFbf4e;
+		    color:#000;
+		    border:outset 2px #FFbf4e;
+		    font-weight : bold;
+		    font-size : 15px;
+		    font-family:Microsoft YaHei;
+		    margin-top: 0.5em;
+		    margin-bottom: 0.5em;
+		    width: 8em;
+		    height: 3em;
+		}
+		
+		.forgot-btn {
+		    background-color:#FFbf4e;
+		    color:#000;
+		    border:outset 2px #FFbf4e;
+		    font-weight : bold;
+		    margin-top: 0.5em;
+		    margin-bottom: 0.5em;
+		    height: 3em;
+		    font-size : 13px;
+		    font-family:Microsoft YaHei;
+		}
     </style>
+   
 </head>
-<body  align="center">
-    <div style="margin:20px 0;"></div>
-    <div class="easyui-panel" style="width:400px;padding:50px 60px">
-        <div style="margin-bottom:20px">
-            <input class="easyui-textbox" prompt="Username" iconWidth="28" style="width:100%;height:34px;padding:10px;">
-        </div>
-        <div style="margin-bottom:20px">
-            <input class="easyui-passwordbox" prompt="Password" iconWidth="28" style="width:100%;height:34px;padding:10px">
+
+<body>
+    <div class="ui-widget-content ui-corner-all"
+        style="width:38em; margin-left:auto; margin-right:auto; margin-top:12em;">
+        <div class="login-content" id="login">
+
+<h2 align="center">欢迎登录备份管理系统</h2>
+
+<div style="text-align: center;font-weight:bold; color:red;">
+     &nbsp;
+</div>
+
+<form  action="" method="post">
+
+<table border="0" cellspacing="7" align="center">
+<tr>
+    <td align="center">
+        <span class="ui-icon ui-icon-person"></span>
+    </td>
+    <td>
+        <b>用户名</b>
+    </td>
+    <td align="left" colspan="2">
+        
+<input class="easyui-textbox" prompt="Username" iconWidth="28"  value="" size="25" maxlength="50"></td>
+</tr>
+<tr>
+    <td align="center">
+        <span class="ui-icon ui-icon-locked"></span>
+    </td>
+    <td>
+        <b>密码</b>
+    </td>
+    <td align="left">
+        
+<input class="easyui-passwordbox" prompt="Password" iconWidth="28"  value="" size="25" maxlength="50">    </td>
+</tr>
+<tr><td colspan="2">
+			<div style="text-align: center; margin-left: auto; margin-right: auto;">
+				<span id="errMsg" style="color:red;"></span>
+			</div>
+		</td></tr>
+<tr>
+    <td colspan="4" > &nbsp;
+                    </td>
+</tr>
+<tr>
+    <td colspan="4" style="text-align: center;">
+        
+<input type="submit" name="submit" id="submit" value="登录" class="login-btn"></td>
+</tr>
+
+</table>
+
+</form>
         </div>
     </div>
 </body>
+
 </html>
