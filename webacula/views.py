@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.core import serializers
 from django.http import HttpResponse
+import models
+
 import json 
+from django.core import serializers
 
 def login(request):
     return render(request, 'webacula/login.html', {})
@@ -9,7 +12,27 @@ def login(request):
 def main(request):
     return render(request, 'webacula/main.html', {})
 
+def model_to_dict(m):
+    print m
+    
+def getJson(models):
+    data = {
+            'total': len(models),
+            'rows': [item.as_json() for item in models]
+           }
+    json_data = json.dumps(data)
+    print json_data
+    return json_data
+    
 def job_list(request):
+    
+    if request.is_ajax():
+        jobs = models.Job.objects.all()
+        json_data = getJson(jobs)
+        
+
+        return HttpResponse(json_data, content_type="application/json")
+         
     return render(request, 'webacula/job_list.html', {})
 
 
@@ -20,7 +43,8 @@ def job_backup(request):
     return render(request, 'webacula/job_restore.html', {})
 
 def dummpjson(request):
-    print "XXXXXXXXXXXXXX"
+  
+    
     data = {"total":28,"rows":[
     {"productid":"FI-SW-01","productname":"Koi","unitcost":10.00,"status":"P","listprice":36.50,"attr1":"Large","itemid":"EST-1"},
     {"productid":"K9-DL-01","productname":"Dalmation","unitcost":12.00,"status":"P","listprice":18.50,"attr1":"Spotted Adult Female","itemid":"EST-10"},

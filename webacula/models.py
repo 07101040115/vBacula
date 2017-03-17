@@ -10,12 +10,15 @@
 from __future__ import unicode_literals
 
 from django.db import models
+import datetime
+import json
 
 
-class Test(models.Model):
-    text = models.CharField(max_length=200)
-    
-    
+BACULA_DB_EXIST = False
+
+def model_is_managed():
+    return not BACULA_DB_EXIST
+
 class Basefiles(models.Model):
     baseid = models.AutoField(db_column='BaseId', primary_key=True)  # Field name made lowercase.
     basejobid = models.IntegerField(db_column='BaseJobId')  # Field name made lowercase.
@@ -24,7 +27,7 @@ class Basefiles(models.Model):
     fileindex = models.IntegerField(db_column='FileIndex', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'BaseFiles'
 
 
@@ -33,7 +36,7 @@ class Cdimages(models.Model):
     lastburn = models.DateTimeField(db_column='LastBurn')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'CDImages'
 
 
@@ -96,7 +99,7 @@ class File(models.Model):
     md5 = models.TextField(db_column='MD5', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'File'
 
 
@@ -107,7 +110,7 @@ class Fileset(models.Model):
     createtime = models.DateTimeField(db_column='CreateTime', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'FileSet'
 
 
@@ -116,7 +119,7 @@ class Filename(models.Model):
     name = models.TextField(db_column='Name')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'Filename'
 
 
@@ -151,10 +154,27 @@ class Job(models.Model):
     filetable = models.CharField(db_column='FileTable', max_length=20, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Job'
 
-
+    def __str__(self):
+        return 'jobid = %s' % self.jobid
+    
+    def __unicode__(self):
+        return 'jobid = %s' % self.jobid
+     
+     
+    def as_json(self):
+        print self.endtime - self.starttime
+        return dict(jobid = self.jobid, name = self.name,
+                    jobstatus = self.jobstatus, level = self.level,
+                    jobfiles = self.jobfiles, jobbytes = self.jobbytes,
+                    joberrors = self.joberrors, clientname = self.clientid,
+                    starttime = self.starttime.strftime('%Y-%m-%d %H:%M:%S'),
+                    endtime = self.endtime.strftime('%Y-%m-%d %H:%M:%S'),
+                    durationtime = str(self.endtime - self.starttime)
+                   )
+        
 class Jobhisto(models.Model):
     jobid = models.IntegerField(db_column='JobId')  # Field name made lowercase.
     job = models.TextField(db_column='Job')  # Field name made lowercase.
@@ -203,7 +223,7 @@ class Jobmedia(models.Model):
     volindex = models.IntegerField(db_column='VolIndex', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'JobMedia'
 
 
@@ -214,7 +234,7 @@ class Location(models.Model):
     enabled = models.IntegerField(db_column='Enabled', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'Location'
 
 
@@ -228,7 +248,7 @@ class Locationlog(models.Model):
     newenabled = models.IntegerField(db_column='NewEnabled', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'LocationLog'
 
 
@@ -239,7 +259,7 @@ class Log(models.Model):
     logtext = models.TextField(db_column='LogText')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'Log'
 
 
@@ -302,7 +322,7 @@ class Mediatype(models.Model):
     readonly = models.IntegerField(db_column='ReadOnly', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'MediaType'
 
 
@@ -311,7 +331,7 @@ class Path(models.Model):
     path = models.TextField(db_column='Path')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'Path'
 
 
@@ -320,7 +340,7 @@ class Pathhierarchy(models.Model):
     ppathid = models.IntegerField(db_column='PPathId')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'PathHierarchy'
 
 
@@ -331,7 +351,7 @@ class Pathvisibility(models.Model):
     files = models.IntegerField(db_column='Files', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'PathVisibility'
         unique_together = (('jobid', 'pathid'),)
 
@@ -382,7 +402,7 @@ class Restoreobject(models.Model):
     objectcompression = models.IntegerField(db_column='ObjectCompression', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'RestoreObject'
 
 
@@ -412,7 +432,7 @@ class Status(models.Model):
     severity = models.IntegerField(db_column='Severity', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'Status'
 
 
@@ -433,7 +453,7 @@ class Unsavedfiles(models.Model):
     filenameid = models.IntegerField(db_column='FilenameId')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'UnsavedFiles'
 
 
@@ -441,19 +461,8 @@ class Version(models.Model):
     versionid = models.IntegerField(db_column='VersionId')  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = model_is_managed()
         db_table = 'Version'
-
-
-class DjangoMigrations(models.Model):
-    app = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    applied = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_migrations'
-
 
 class WebaculaClientAcl(models.Model):
     name = models.CharField(max_length=127, blank=True, null=True)

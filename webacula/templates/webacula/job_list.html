@@ -1,6 +1,35 @@
 {% extends "webacula/base.html" %}
 {% block EXTRA_JS %}
 	<script type="text/javascript">
+		$(function(){
+			$('#tab').datagrid({
+				url: 'task',
+				method: 'get',
+				title: 'Context Menu on DataGrid',
+				iconCls: 'icon-save',
+				width: '100%',
+				height: '100%',
+				fitColumns: true,
+				singleSelect: true,
+				toolbar: '#tb',
+				rownumbers:true,
+				pagination:true,
+				pageSize:10,
+				columns:[[
+					{field:'jobid',title:'Job Id',width:'5%'},
+					{field:'name',title:'Job Name',width:'10%'},
+					{field:'jobstatus',title:'Status',width:'5%',align:'right'},
+					{field:'level',title:'Level',width:'5%',align:'right'},
+					{field:'jobfiles',title:'Files',width:'5%'},
+					{field:'jobbytes',title:'Bytes',width:'10%',align:'center'},
+					{field:'joberrors',title:'Errors',width:'10%',align:'center'},
+					{field:'clientname',title:'Client',width:'10%',align:'center'},
+					{field:'starttime',title:'Start Time',width:'15%',align:'center'},
+					{field:'endtime',title:'End Time',width:'15%',align:'center'},
+					{field:'durationtime',title:'Duration',width:'10%',align:'center'},
+				]]
+			});
+		});
 		var toolbar = [{
 			text:'Add',
 			iconCls:'icon-add',
@@ -86,22 +115,9 @@
 {% endblock %}
 
 {% block Body %} 
-<body style="margin:0; padding: 0;height:500px">
+<body style="margin:0; padding: 0;height: 700px">
 	<div style="margin:0px 0;"></div>
-	<table id="tab" class="easyui-datagrid"  title="一览" style="width:100%;height:100%"
-			data-options="rownumbers:true,singleSelect:true,pagination:true,fit:true,fitColumns:false,url:'dummpjson',method:'get',toolbar:tb,">
-		<thead>
-			<tr>
-				<th data-options="field:'itemid',width:'10%'">Item ID</th>
-				<th data-options="field:'productid',width:'10%'">Product</th>
-				<th data-options="field:'listprice',width:'10%',align:'right'">List Price</th>
-				<th data-options="field:'unitcost',width:'10%',align:'right'">Unit Cost</th>
-				<th data-options="field:'attr1',width:'10%'">Attribute</th>
-				<th data-options="field:'status',width:'10%',align:'center'">Status</th>
-			</tr>
-		</thead>
-	</table>
-	
+	<table id="tab"></table>
 	
 	<div id="tb" style="padding:2px 5px;">
 		<a href="javascript:void(0)" onclick="newUser()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="accept()">新建</a>

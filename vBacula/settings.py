@@ -75,6 +75,20 @@ WSGI_APPLICATION = 'vBacula.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+#bacula virtual machine
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'bacula',
+#         'USER': 'root',
+#         'PASSWORD': 'wangteng',
+#         'HOST': '192.168.10.141', 
+#         'PORT': '',
+#         'CONN_MAX_AGE': 300,
+#     }
+# }
+
+#win7 virtual machine
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -83,6 +97,7 @@ DATABASES = {
         'PASSWORD': 'wangteng',
         'HOST': '192.168.10.111', 
         'PORT': '',
+        'CONN_MAX_AGE': 300,
     }
 }
 
